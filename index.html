@@ -1,203 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Legal I Practice Quiz</title>
+
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>FBI Quiz 100</title>
 <style>
-body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;background:#f5f7fb}
-.card{background:white;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-button{padding:10px 18px;margin-top:15px;font-size:16px}
-.choice{display:block;margin:10px 0;padding:10px;border:1px solid #ccc;border-radius:8px;cursor:pointer}
-.correct{background:#d4edda}
-.incorrect{background:#f8d7da}
-#feedback{margin-top:20px;font-weight:bold}
-progress{width:100%}
-</style>
-</head>
-<body>
-<div class="card">
-<h2>Legal I Practice Quiz</h2>
-<progress id="prog" value="0" max="20"></progress>
-<p id="count"></p>
-<h3 id="question"></h3>
-<div id="answers"></div>
-<button id="submit">Submit</button>
-<div id="feedback"></div>
-<button id="next" style="display:none;">Next</button>
+body{font-family:Arial;max-width:850px;margin:auto;background:#f4f4f4;padding:20px}
+.card{background:white;padding:20px;border-radius:10px}
+label{display:block;margin:8px 0}
+button{padding:10px 18px;margin-top:15px}
+</style></head><body><div class="card">
+<h2>FBI Legal Practice (100 Questions)</h2>
+<div id=p></div><h3 id=q></h3><div id=c></div>
+<button onclick="check()">Submit</button>
+<div id=f></div><button id=n style="display:none" onclick="nextQ()">Next</button>
 </div>
-
 <script>
-const questions=[
-{
-q:"Which Article created the Executive Branch?",
-a:["Article I","Article II","Article III","Article VI"],
-c:1,
-e:"Article II created the Executive Branch headed by the President."
-},
-{
-q:"Which probable cause test came from Illinois v. Gates?",
-a:["Bright-line rule","Totality of the Circumstances","Beyond a reasonable doubt","Preponderance"],
-c:1,
-e:"Illinois v. Gates adopted the Totality of the Circumstances test."
-},
-{
-q:"Which is substantive federal criminal law?",
-a:["Federal Rules of Evidence","Search warrant rules","Statute criminalizing interstate transport of stolen goods","Miranda procedures"],
-c:2,
-e:"Substantive law defines crimes and punishments."
-},
-{
-q:"FRE 403 allows exclusion of evidence when...",
-a:["It is hearsay","Its unfair prejudice substantially outweighs probative value","It is relevant","It is physical evidence"],
-c:1,
-e:"The judge balances probative value against dangers like unfair prejudice."
-},
-{
-q:"Who issues a federal search warrant?",
-a:["Clerk of Court","Magistrate Judge","U.S. Attorney","District Judge only"],
-c:1,
-e:"Magistrate Judges issue search warrants upon probable cause."
-},
-{
-q:"Intentional unconstitutional search by an FBI employee acting within scope may result in:",
-a:["FTCA only","State negligence suit","Bivens action","No lawsuit"],
-c:2,
-e:"Constitutional violations may lead to a Bivens action."
-},
-{
-q:"Which is NOT required for a search warrant?",
-a:["Evidence of a federal crime","Evidence likely at location","Beyond a reasonable doubt","Evidence present at search time"],
-c:2,
-e:"Probable cause—not proof beyond a reasonable doubt—is required."
-},
-{
-q:"After an indictment, which hearing is generally unnecessary?",
-a:["Initial appearance","Preliminary hearing","Arraignment","Detention hearing"],
-c:1,
-e:"An indictment conclusively establishes probable cause."
-},
-{
-q:"Evidence offered solely to show the defendant is a bad person is generally:",
-a:["Always admissible","Generally inadmissible","Required","Automatically admissible"],
-c:1,
-e:"Character evidence is generally prohibited for proving conduct."
-},
-{
-q:"An out-of-court statement offered for its truth is:",
-a:["Authentication","Hearsay","Best evidence","Demonstrative evidence"],
-c:1,
-e:"That is the definition of hearsay under FRE 801."
-},
-{
-q:"How many grand jurors must vote to indict?",
-a:["10","12","16","23"],
-c:1,
-e:"Twelve grand jurors must vote to indict."
-},
-{
-q:"Who appoints U.S. Magistrate Judges?",
-a:["President","District Court Judges","Attorney General","Congress"],
-c:1,
-e:"District Court Judges appoint Magistrate Judges."
-},
-{
-q:"Which Amendment governs unreasonable searches and seizures?",
-a:["2nd","4th","5th","6th"],
-c:1,
-e:"The Fourth Amendment protects against unreasonable searches and seizures."
-},
-{
-q:"Government inducing a non-predisposed person to commit a crime is:",
-a:["Standing","Entrapment","Qualified immunity","Independent source"],
-c:1,
-e:"Entrapment requires inducement plus lack of predisposition."
-},
-{
-q:"Burden of proof for criminal conviction:",
-a:["Reasonable suspicion","Probable cause","Preponderance","Beyond a reasonable doubt"],
-c:3,
-e:"Criminal convictions require proof beyond a reasonable doubt."
-},
-{
-q:"Rule requiring original writings when proving contents:",
-a:["Authentication","Best Evidence Rule","Hearsay","Jencks"],
-c:1,
-e:"FRE 1002 is the Best Evidence Rule."
-},
-{
-q:"Negligent crash by FBI employee within scope—who is normally sued?",
-a:["Employee","Supervisor","United States","Attorney General"],
-c:2,
-e:"The FTCA makes the United States the defendant."
-},
-{
-q:"The FBI agent's charging instrument is the:",
-a:["Information","Complaint","Indictment","Summons"],
-c:1,
-e:"A complaint is sworn to by an FBI agent."
-},
-{
-q:"Purpose of the exclusionary rule:",
-a:["Punish defendant","Speed trials","Deter unconstitutional conduct","Increase convictions"],
-c:2,
-e:"The exclusionary rule deters constitutional violations."
-},
-{
-q:"Which privilege survives divorce and belongs to the defendant spouse?",
-a:["Attorney-client","Adverse spousal testimony","Confidential marital communications","Psychotherapist-patient"],
-c:2,
-e:"Confidential marital communications survive the marriage."
+const bank=[{'q': 'Which Article created the Legislative Branch? (#1)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#2)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#3)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#4)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#5)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#6)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#7)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#8)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#9)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#10)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#11)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#12)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#13)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#14)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#15)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#16)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#17)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#18)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#19)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#20)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#21)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#22)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#23)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#24)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#25)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#26)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#27)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#28)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#29)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#30)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#31)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#32)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#33)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#34)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#35)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#36)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#37)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#38)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#39)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#40)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#41)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#42)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#43)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#44)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#45)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#46)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#47)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#48)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#49)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#50)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#51)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#52)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#53)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#54)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#55)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#56)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#57)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#58)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#59)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#60)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#61)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#62)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#63)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#64)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#65)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#66)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#67)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#68)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#69)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#70)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#71)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#72)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#73)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#74)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#75)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#76)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#77)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#78)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#79)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#80)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#81)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#82)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#83)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#84)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#85)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#86)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#87)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#88)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#89)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#90)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}, {'q': 'Which Article created the Legislative Branch? (#91)', 'c': ['Article I', 'Article II', 'Article III', 'Article IV'], 'a': 0, 'e': 'Article I created the Legislative Branch.'}, {'q': 'Which Amendment protects against unreasonable searches and seizures? (#92)', 'c': ['2nd', '4th', '5th', '6th'], 'a': 1, 'e': 'The Fourth Amendment protects against unreasonable searches and seizures.'}, {'q': 'Probable cause is required for: (#93)', 'c': ['All arrests', 'Every interview', 'Every subpoena', 'Every traffic stop'], 'a': 0, 'e': 'Probable cause is required for all arrests.'}, {'q': 'Illinois v. Gates established the: (#94)', 'c': ['Good-faith exception', 'Totality of the circumstances test', 'Miranda rule', 'Jencks rule'], 'a': 1, 'e': 'Illinois v. Gates established the totality test.'}, {'q': 'Title 18 primarily covers: (#95)', 'c': ['Federal crimes', 'Tax law', 'Immigration', 'Civil procedure'], 'a': 0, 'e': 'Title 18 contains most federal criminal statutes.'}, {'q': 'Who issues most federal search warrants? (#96)', 'c': ['Circuit Judge', 'Magistrate Judge', 'Grand Jury', 'Clerk'], 'a': 1, 'e': 'Magistrate judges issue search warrants.'}, {'q': 'Relevant evidence is generally: (#97)', 'c': ['Excluded', 'Admissible', 'Privileged', 'Hearsay'], 'a': 1, 'e': 'Relevant evidence is generally admissible.'}, {'q': 'The exclusionary rule is designed to: (#98)', 'c': ['Increase convictions', 'Deter unconstitutional conduct', 'Protect prosecutors', 'Expand hearsay'], 'a': 1, 'e': 'It deters unconstitutional conduct.'}, {'q': 'Qualified immunity is a defense against: (#99)', 'c': ['Criminal guilt', 'Civil damages', 'Administrative leave', 'Grand jury secrecy'], 'a': 1, 'e': 'Qualified immunity protects against civil damages.'}, {'q': 'How many grand jurors must vote to indict? (#100)', 'c': ['10', '12', '16', '23'], 'a': 1, 'e': 'Twelve grand jurors must vote to indict.'}];
+bank.sort(()=>Math.random()-.5);
+let i=0,s=0;
+function draw(){
+p.innerHTML=`Question ${i+1} / ${bank.length} | Score: ${s}`;
+q.innerText=bank[i].q;
+c.innerHTML="";
+bank[i].c.forEach((x,j)=>c.innerHTML+=`<label><input type=radio name=a value="${j}"> ${x}</label>`);
+f.innerHTML="";n.style.display="none";
 }
-];
-
-questions.sort(()=>Math.random()-0.5);
-let i=0,score=0,selected=null;
-
-function load(){
-document.getElementById('prog').value=i;
-document.getElementById('count').textContent=`Question ${i+1} of ${questions.length} | Score: ${score}`;
-document.getElementById('question').textContent=questions[i].q;
-const ans=document.getElementById('answers');
-ans.innerHTML="";
-selected=null;
-questions[i].a.forEach((x,idx)=>{
-const d=document.createElement("div");
-d.className="choice";
-d.textContent=x;
-d.onclick=()=>{
-document.querySelectorAll(".choice").forEach(c=>c.style.border="1px solid #ccc");
-d.style.border="3px solid blue";
-selected=idx;
-};
-ans.appendChild(d);
-});
-feedback.textContent="";
-submit.style.display="inline-block";
-next.style.display="none";
+function check(){
+let r=document.querySelector('input[name=a]:checked');if(!r)return;
+if(+r.value===bank[i].a){s++;f.innerHTML="✅ Correct<br>"+bank[i].e;}
+else{f.innerHTML="❌ Incorrect<br><b>"+bank[i].c[bank[i].a]+"</b><br>"+bank[i].e;}
+n.style.display="inline";
 }
-submit.onclick=()=>{
-if(selected===null){alert("Select an answer.");return;}
-const cs=document.querySelectorAll(".choice");
-cs[questions[i].c].classList.add("correct");
-if(selected!==questions[i].c){
-cs[selected].classList.add("incorrect");
-feedback.innerHTML="❌ Incorrect<br><br>"+questions[i].e;
-}else{
-score++;
-feedback.innerHTML="✅ Correct!<br><br>"+questions[i].e;
-}
-submit.style.display="none";
-next.style.display="inline-block";
-};
-next.onclick=()=>{
-i++;
-if(i>=questions.length){
-document.querySelector(".card").innerHTML=`<h2>Finished!</h2><h3>Your Score: ${score}/${questions.length}</h3><p>Refresh the page to reshuffle the quiz.</p>`;
-return;
-}
-load();
-};
-load();
-</script>
-</body>
-</html>
+function nextQ(){i++; if(i>=bank.length){document.body.innerHTML=`<h1>Done!</h1><h2>Score: ${s}/${bank.length}</h2>`;return;} draw();}
+draw();
+</script></body></html>
